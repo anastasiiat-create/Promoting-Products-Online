@@ -14,8 +14,8 @@
         }
         .heart {
             position: absolute;
-            width: 120px; /* Зменшено розмір шарика для мобільних */
-            height: 120px; /* Зменшено розмір шарика для мобільних */
+            width: 160px; /* Збільшено розмір шарика */
+            height: 160px; /* Збільшено розмір шарика */
             background-image: url('https://i.postimg.cc/LscHpd5T/a3057f142f5943dfedd0aa79247859db-removebg-preview.png');
             background-size: cover;
             animation: float 6s linear infinite; /* Тепер анімація триває 6 секунд */
@@ -31,9 +31,9 @@
             left: 50%;
             transform: translateX(-50%);
             background-color: #ff63a5; /* Рожевий фон для кнопки */
-            padding: 15px 30px;
+            padding: 20px 40px;
             color: white;
-            font-size: 20px;
+            font-size: 24px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -45,9 +45,9 @@
             left: 50%;
             transform: translateX(-50%);
             background-color: #ff80bf; /* М'якший рожевий */
-            padding: 15px 30px;
+            padding: 20px 40px;
             color: white;
-            font-size: 20px;
+            font-size: 24px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -55,8 +55,8 @@
         }
         .product {
             position: absolute;
-            width: 120px; /* Зменшено розмір косметики для мобільних */
-            height: 120px; /* Зменшено розмір косметики для мобільних */
+            width: 160px; /* Збільшено розмір косметики */
+            height: 160px; /* Збільшено розмір косметики */
             animation: pop 1s forwards;
         }
         @keyframes pop {
@@ -68,7 +68,7 @@
             top: 0;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 30px;
+            font-size: 40px;
             animation: confetti 2s infinite;
             color: #ff63a5; /* Початковий колір конфеті */
         }
@@ -89,25 +89,26 @@
             overflow-y: auto;
         }
         #cart-items img {
-            width: 120px;
-            height: 120px;
+            width: 160px;
+            height: 160px;
             margin-bottom: 20px;
+            display: block; /* Вирівнює продукти в стовпчик */
         }
         #cart-items h3 {
             text-align: center;
             color: #ff63a5; /* Рожевий колір заголовка */
-            font-size: 24px;
+            font-size: 28px;
         }
         #cart-items button {
             display: block;
             width: 100%;
-            padding: 15px;
+            padding: 20px;
             background-color: #32cd32;
             border: none;
             border-radius: 5px;
             color: white;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 22px;
         }
 
         /* Для блур ефекту */
@@ -126,7 +127,7 @@
 
         /* Великі галочка */
         #large-check {
-            font-size: 100px;
+            font-size: 120px;
             color: white;
             text-align: center;
             display: none;
@@ -135,32 +136,32 @@
         /* Мобільний вигляд */
         @media (max-width: 600px) {
             .heart {
-                width: 80px;
-                height: 80px;
+                width: 120px;
+                height: 120px;
             }
 
             .product {
-                width: 80px;
-                height: 80px;
+                width: 120px;
+                height: 120px;
             }
 
             #cart, #insights {
-                font-size: 18px;
+                font-size: 20px;
                 width: 90%;
                 padding: 20px;
             }
 
             #cart-items img {
-                width: 100px;
-                height: 100px;
+                width: 140px;
+                height: 140px;
             }
 
             #cart-items h3 {
-                font-size: 22px;
+                font-size: 24px;
             }
 
             #cart-items button {
-                font-size: 16px;
+                font-size: 18px;
             }
         }
     </style>
@@ -171,7 +172,6 @@
     <div id="cart-items">
         <h3>Cart</h3>
         <div id="product-list"></div>
-        <button onclick="clearCart()">Clear Cart</button>
         <button id="insights">Get insights</button>
     </div>
 
@@ -259,13 +259,6 @@
             // Видаляємо всі сердечка з екрану
             const hearts = document.querySelectorAll('.heart');
             hearts.forEach(heart => heart.remove());
-        }
-
-        function clearCart() {
-            cart = [];
-            updateCart();
-            cartItems.style.display = 'none';
-            heartsFlying = true;  // Після закриття кошика знову дозволяємо анімацію
         }
 
         function showConfetti() {
