@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Pop Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fef2f9; /* Легкий рожевий фон */
+            overflow: hidden;
+        }
+        .heart {
+            position: absolute;
+            width: 150px; /* Збільшено розмір шарика */
+            height: 150px; /* Збільшено розмір шарика */
+            background-image: url('https://i.postimg.cc/LscHpd5T/a3057f142f5943dfedd0aa79247859db-removebg-preview.png');
+            background-size: cover;
+            animation: float 6s linear infinite; /* Тепер анімація триває 6 секунд */
+            cursor: pointer;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh); }
+            100% { transform: translateY(-100vh); }
+        }
+        #cart {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ff63a5; /* Рожевий фон для кнопки */
+            padding: 10px 20px;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #insights {
+            position: relative;
+            background-color: #ff80bf; /* М'якший рожевий */
+            padding: 10px 20px;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px; /* Відстань між кнопками */
+        }
+        .product {
+            position: absolute;
+            width: 150px; /* Збільшено розмір косметики */
+            height: 150px; /* Збільшено розмір косметики */
+            animation: pop 1s forwards;
+        }
+        @keyframes pop {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+        .confetti {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 30px;
+            animation: confetti 2s infinite;
+            color: #ff63a5; /* Початковий колір конфеті */
+        }
+        @keyframes confetti {
+            0% { top: 0; opacity: 1; }
+            100% { top: 100vh; opacity: 0; }
+        }
+        #cart-items {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: rgba(255, 255, 255, 0.9); /* Більш прозорий фон для кошика */
+            padding: 20px;
+            width: 100%;
+            height: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+            overflow-y: auto;
+        }
+        #cart-items img {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 20px;
+        }
+        #cart-items h3 {
+            text-align: center;
+            color: #ff63a5; /* Рожевий колір заголовка */
+            font-size: 24px;
+        }
+        #cart-items button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #32cd32;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Для блур ефекту */
+        #blur-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Напівпрозорий чорний фон */
+            backdrop-filter: blur(5px); /* Ефект блюру */
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Великі галочка */
+        #large-check {
+            font-size: 100px;
+            color: white;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="cart">Cart (0)</button>
+    <div id="cart-items">
+        <h3>Cart</h3>
+        <div id="product-list"></div>
+        <button onclick="clearCart()">Clear Cart</button>
+        <button id="insights">Get insights</button>
+    </div>
+
+    <!-- Блур overlay та галочка -->
+    <div id="blur-overlay">
+        <div id="large-check">✔</div>
+    </div>
+
+    <script>
+        let cart = [];
+        let heartsFlying = true;  // Для контролю за анімацією шариків
+        let lastProductIndex = -1; // Змінна для запам'ятовування останнього вибраного продукту
+        const cartButton = document.getElementById('cart');
+        const cartItems = document.getElementById('cart-items');
+        const productList = document.getElementById('product-list');
+        const blurOverlay = document.getElementById('blur-overlay');
+        const largeCheck = document.getElementById('large-check');
+
+        const products = [
+            'https://i.postimg.cc/PxL7PD8L/cc6f378c77127380b5676108cf1bdb43-removebg-preview.png',
+            'https://i.postimg.cc/DwBp66r1/309795f55ff44e827dc6677e2e74529c-removebg-preview-(2).png',
+            'https://i.postimg.cc/QCQ0TJN5/65fcb7d6aeca6bf208c7892a5ef309bf-removebg-preview-(1).png',
+            'https://i.postimg.cc/BnYNH63t/b8b7f38d3e67374ba1e4e8cbdb61d241-removebg-preview.png',
+            'https://i.postimg.cc/SRhGkYLn/435a9337d67c2815122cff204cf4719c-removebg-preview.png',
+            'https://i.postimg.cc/BQNCf6Xg/01df25e265e70112b4a0aa7938b76a98-removebg-preview.png',
+            'https://i.postimg.cc/mr139y8s/00b96b0b9086c2cae150d2d7b87b2f83-removebg-preview-(1).png'
+        ];
+
+        function createHeart() {
+            if (!heartsFlying) return;  // Якщо кошик відкритий, не створюємо нові шарики
+
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.style.left = `${Math.random() * 100}%`;
+            heart.style.animationDuration = `${Math.random() * 2 + 6}s`; // Тепер анімація триває 6 секунд
+
+            // Add the heart to the document
+            document.body.appendChild(heart);
+
+            // Remove heart on click, and create a product
+            heart.addEventListener('click', () => {
+                const product = createProduct();
+                heart.remove();
+                cart.push(product.src); // Додаємо зображення продукту в кошик
+                updateCart();
+                document.body.appendChild(product);
+            });
+        }
+
+        function createProduct() {
+            let productIndex;
+            do {
+                productIndex = Math.floor(Math.random() * products.length);
+            } while (productIndex === lastProductIndex); // Перевірка, щоб не вибрати той самий продукт підряд
+
+            lastProductIndex = productIndex; // Оновлюємо останній вибраний індекс
+            const product = document.createElement('img');
+            product.src = products[productIndex];
+            product.classList.add('product');
+            product.style.top = '50%';
+            product.style.left = `${Math.random() * 100}%`;
+
+            // Remove product after 2 seconds
+            setTimeout(() => {
+                product.remove();
+            }, 2000);
+
+            return product;
+        }
+
+        function updateCart() {
+            cartButton.textContent = `Cart (${cart.length})`;
+            productList.innerHTML = '';
+            cart.forEach(item => {
+                const img = document.createElement('img');
+                img.src = item;
+                productList.appendChild(img);
+            });
+        }
+
+        function showCart() {
+            cartItems.style.display = 'block';
+            heartsFlying = false;  // При відкритті кошика зупиняємо анімацію шариків
+
+            // Видаляємо всі сердечка з екрану
+            const hearts = document.querySelectorAll('.heart');
+            hearts.forEach(heart => heart.remove());
+        }
+
+        function clearCart() {
+            cart = [];
+            updateCart();
+            cartItems.style.display = 'none';
+            heartsFlying = true;  // Після закриття кошика знову дозволяємо анімацію
+        }
+
+        function showConfetti() {
+            const confettiColors = ['#ff63a5', '#ff80bf', '#ffcc00', '#32cd32', '#ff1493'];
+            for (let i = 0; i < 20; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.color = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.animationDuration = `${Math.random() * 2 + 1}s`; // Рандомна тривалість анімації
+                document.body.appendChild(confetti);
+
+                // Remove confetti after animation ends
+                setTimeout(() => {
+                    confetti.remove();
+                }, 2000);
+            }
+        }
+
+        // Функція для показу ефекту "Get insights"
+        function showInsights() {
+            // Спочатку показуємо конфетті
+            showConfetti();
+
+            // Показуємо overlay та галочку одночасно
+            blurOverlay.style.display = 'flex';
+            largeCheck.style.display = 'block';
+
+            // Зупиняємо анімацію сердець під час "інсайтів"
+            heartsFlying = false;
+
+            // Ховаємо галочку та конфетті після 2 секунд
+            setTimeout(() => {
+                blurOverlay.style.display = 'none';
+                largeCheck.style.display = 'none';
+                heartsFlying = true; // Повертаємо анімацію сердець
+            }, 2000);
+        }
+
+        cartButton.addEventListener('click', showCart);
+        document.getElementById('insights').addEventListener('click', showInsights);
+
+        // Create hearts every 1.5 seconds
+        setInterval(createHeart, 1500);
+    </script>
+
+</body>
+</html>
