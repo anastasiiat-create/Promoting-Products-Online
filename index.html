@@ -14,8 +14,8 @@
         }
         .heart {
             position: absolute;
-            width: 150px; /* Збільшено розмір шарика */
-            height: 150px; /* Збільшено розмір шарика */
+            width: 120px; /* Зменшено розмір шарика для мобільних */
+            height: 120px; /* Зменшено розмір шарика для мобільних */
             background-image: url('https://i.postimg.cc/LscHpd5T/a3057f142f5943dfedd0aa79247859db-removebg-preview.png');
             background-size: cover;
             animation: float 6s linear infinite; /* Тепер анімація триває 6 секунд */
@@ -26,33 +26,35 @@
             100% { transform: translateY(-100vh); }
         }
         #cart {
-            position: absolute;
-            bottom: 10px;
+            position: fixed;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             background-color: #ff63a5; /* Рожевий фон для кнопки */
             padding: 10px 20px;
             color: white;
-            font-size: 18px;
+            font-size: 16px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
         #insights {
-            position: relative;
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
             background-color: #ff80bf; /* М'якший рожевий */
             padding: 10px 20px;
             color: white;
-            font-size: 18px;
+            font-size: 16px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 10px; /* Відстань між кнопками */
         }
         .product {
             position: absolute;
-            width: 150px; /* Збільшено розмір косметики */
-            height: 150px; /* Збільшено розмір косметики */
+            width: 120px; /* Зменшено розмір косметики для мобільних */
+            height: 120px; /* Зменшено розмір косметики для мобільних */
             animation: pop 1s forwards;
         }
         @keyframes pop {
@@ -85,8 +87,8 @@
             overflow-y: auto;
         }
         #cart-items img {
-            width: 150px;
-            height: 150px;
+            width: 120px;
+            height: 120px;
             margin-bottom: 20px;
         }
         #cart-items h3 {
@@ -126,6 +128,38 @@
             color: white;
             text-align: center;
             display: none;
+        }
+
+        /* Мобільний вигляд */
+        @media (max-width: 600px) {
+            .heart {
+                width: 80px;
+                height: 80px;
+            }
+
+            .product {
+                width: 80px;
+                height: 80px;
+            }
+
+            #cart, #insights {
+                width: 90%;
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            #cart-items img {
+                width: 80px;
+                height: 80px;
+            }
+
+            #cart-items h3 {
+                font-size: 20px;
+            }
+
+            #cart-items button {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -278,3 +312,4 @@
 
 </body>
 </html>
+
